@@ -1,273 +1,97 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<title>今日待办 - 仿苹果风</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    body {
-        font-family: 'Inter', 'Helvetica Neue', sans-serif;
-        background-color: #f5f5f7;
-        color: #1d1d1f;
-        margin: 0;
-        padding: 0;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-    
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 24px;
-    }
-    
-    .header {
-        margin-bottom: 24px;
-    }
-    
-    .title {
-        font-size: 24px;
-        font-weight: 600;
-        color: #1d1d1f;
-        margin: 0;
-    }
-    
-    .subtitle {
-        font-size: 14px;
-        color: #6e6e73;
-        margin-top: 4px;
-    }
-    
-    .input-container {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-        padding: 16px;
-        margin-bottom: 24px;
-        transition: all 0.3s ease;
-    }
-    
-    .input-container:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    }
-    
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .form-control {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .form-label {
-        font-size: 12px;
-        color: #6e6e73;
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    
-    .form-input {
-        padding: 12px;
-        border: 1px solid #d2d2d7;
-        border-radius: 8px;
-        font-size: 16px;
-        transition: border-color 0.2s ease;
-        outline: none;
-    }
-    
-    .form-input:focus {
-        border-color: #0071e3;
-        box-shadow: 0 0 0 3px rgba(0, 125, 250, 0.25);
-    }
-    
-    .btn {
-        padding: 12px 16px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .btn-primary {
-        background-color: #0071e3;
-        color: #ffffff;
-    }
-    
-    .btn-primary:hover {
-        background-color: #0066cc;
-    }
-    
-    .btn-primary:active {
-        background-color: #0050a0;
-    }
-    
-    .btn-delete {
-        background-color: transparent;
-        color: #ff3b30;
-        padding: 8px;
-        border-radius: 50%;
-        transition: background-color 0.2s ease;
-    }
-    
-    .btn-delete:hover {
-        background-color: rgba(255, 59, 48, 0.1);
-    }
-    
-    .btn-delete:active {
-        background-color: rgba(255, 59, 48, 0.2);
-    }
-    
-    .todo-list {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
-    }
-    
-    .todo-header {
-        padding: 16px;
-        border-bottom: 1px solid #f5f5f7;
-    }
-    
-    .todo-title {
-        font-size: 16px;
-        font-weight: 500;
-        color: #6e6e73;
-        margin: 0;
-    }
-    
-    .todo-item {
-        padding: 16px;
-        border-bottom: 1px solid #f5f5f7;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        transition: all 0.2s ease;
-        position: relative;
-    }
-    
-    .todo-item:last-child {
-        border-bottom: none;
-    }
-    
-    .todo-item:hover {
-        background-color: #fafafa;
-    }
-    
-    .todo-item.dragging {
-        opacity: 0.5;
-        background-color: #f0f0f0;
-    }
-    
-    .todo-item.over {
-        background-color: #f5f5f7;
-    }
-    
-    .todo-index {
-        width: 24px;
-        text-align: center;
-        color: #6e6e73;
-        font-size: 14px;
-    }
-    
-    .todo-content {
-        flex-grow: 1;
-    }
-    
-    .todo-name {
-        font-size: 16px;
-        font-weight: 400;
-        margin: 0;
-    }
-    
-    .todo-completed .todo-name {
-        text-decoration: line-through;
-        color: #6e6e73;
-    }
-    
-    .todo-controls {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .pomodoro-container {
-        display: flex;
-        gap: 6px;
-    }
-    
-    .pomodoro {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        border: 1px solid #d2d2d7;
-        transition: all 0.2s ease;
-        cursor: pointer;
-    }
-    
-    .pomodoro:hover {
-        background-color: rgba(0, 125, 250, 0.1);
-        border-color: #0071e3;
-    }
-    
-    .pomodoro.completed {
-        background-color: #0071e3;
-        border-color: #0071e3;
-    }
-    
-    .no-pomodoros {
-        color: #6e6e73;
-        font-size: 14px;
-    }
-    
-    .divider {
-        height: 1px;
-        background-color: #f5f5f7;
-        margin: 12px 0;
-    }
-    
-    /* 动画效果 */
-    .fade-in {
-        animation: fadeIn 0.3s ease forwards;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* 移动端适配 */
-    @media (max-width: 600px) {
-        .container {
-            padding: 16px;
+    <meta charset="UTF-8">
+    <title>今日待办 - 仿苹果风</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .todo-list {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
         }
-        
+
+        .todo-header {
+            padding: 16px;
+            border-bottom: 1px solid #f5f5f7;
+        }
+
+        .todo-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #6e6e73;
+            margin: 0;
+        }
+
         .todo-item {
-            padding: 12px;
+            padding: 16px;
+            border-bottom: 1px solid #f5f5f7;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+
+        .todo-item:hover {
+            background-color: #fafafa;
+        }
+
+        .todo-item.dragging {
+            opacity: 0.5;
+            background-color: #f0f0f0;
+        }
+
+        .todo-item.over {
+            background-color: #f5f5f7;
+        }
+
+        .todo-index {
+            width: 24px;
+            text-align: center;
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        .todo-content {
+            flex-grow: 1;
+        }
+
+        .todo-name {
+            font-size: 16px;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .todo-completed .todo-name {
+            text-decoration: line-through;
+            color: #6e6e73;
+        }
+
+        .todo-controls {
+            display: flex;
+            align-items: center;
             gap: 12px;
         }
-        
-        .todo-index {
-            width: 20px;
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            .todo-item {
+                padding: 12px;
+                gap: 12px;
+            }
+
+            .todo-index {
+                width: 20px;
+            }
         }
-        
-        .pomodoro {
-            width: 16px;
-            height: 16px;
-        }
-    }
-</style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -275,22 +99,22 @@
             <h1 class="title">今日待办</h1>
             <p class="subtitle">管理你的任务和番茄钟</p>
         </div>
-        
+
         <div class="input-container">
-            <div class="form-group">
+            <div class="form-group" >
                 <div class="form-control">
                     <label for="taskInput" class="form-label">任务名称</label>
                     <input type="text" id="taskInput" placeholder="输入任务名称（最多15字）" maxlength="15"
                            class="form-input" onkeydown="handleEnter(event)">
                 </div>
-                
+
                 <div class="form-control">
                     <label for="pomodoroInput" class="form-label">番茄数量</label>
                     <input type="number" id="pomodoroInput" min="0" max="9" placeholder="可用番茄（0~9）"
                            class="form-input" onkeydown="handleEnter(event)">
                 </div>
-                
-                <button class="btn btn-primary" onclick="addTask()">
+
+                <button class="btn btn-primary" onclick="addTask()" style="width: 100%;margin-top: 16px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -299,84 +123,58 @@
                 </button>
             </div>
         </div>
-        
+
         <div class="todo-list">
             <div class="todo-header">
-                <h2 class="todo-title">TO DO TODAY (今日待办)</h2>
+                <h2 class="todo-title">待办事项</h2>
             </div>
-            <div id="todoItems" class="todo-items">
+            <div id="todoItems">
                 <!-- 动态添加的任务将插入到这里 -->
             </div>
         </div>
     </div>
 
     <script>
-        // 回车键处理函数
-        function handleEnter(e) {
-            if (e.key === "Enter") {
-                addTask();
-            }
-        }
+        const taskInput = document.getElementById('taskInput');
+        const pomodoroInput = document.getElementById('pomodoroInput');
+        const todoItems = document.getElementById('todoItems');
 
         function addTask() {
-            const taskInput = document.getElementById('taskInput');
-            const pomodoroInput = document.getElementById('pomodoroInput');
+            const taskName = taskInput.value.trim();
+            const pomodoroCount = parseInt(pomodoroInput.value) || 0;
 
-            let taskName = taskInput.value.trim();
-            let pomodoroCount = parseInt(pomodoroInput.value.trim());
+            if (taskName === '') return;
 
-            // 验证逻辑
-            if (!taskName) {
-                alert("任务名称不能为空！");
-                return;
-            }
-
-            if (taskName.length > 15) {
-                alert("任务名称不能超过15个字符！");
-                return;
-            }
-
-            if (isNaN(pomodoroCount)) {
-                alert("请输入有效的番茄数量！");
-                return;
-            }
-
-            if (pomodoroCount < 0 || pomodoroCount > 9) {
-                alert("番茄数量必须在0~9之间！");
-                return;
-            }
-
-            const todoItems = document.getElementById('todoItems');
             let rowNumber = todoItems.children.length + 1;
-            
+
             // 创建任务项元素
             const taskItem = document.createElement('div');
             taskItem.className = 'todo-item fade-in';
             taskItem.setAttribute("draggable", "true");
             taskItem.setAttribute("data-id", Date.now()); // 使用时间戳作为唯一ID
-            
+
             // 序号
             const indexElement = document.createElement('div');
             indexElement.className = 'todo-index';
             indexElement.textContent = rowNumber;
-            
+
             // 任务内容
             const contentElement = document.createElement('div');
             contentElement.className = 'todo-content';
-            
+
             const nameElement = document.createElement('h3');
             nameElement.className = 'todo-name';
             nameElement.textContent = taskName;
-            
+
             contentElement.appendChild(nameElement);
-            
+
             // 番茄计数和删除按钮
             const controlsElement = document.createElement('div');
             controlsElement.className = 'todo-controls';
-            
+
             const pomodoroContainer = document.createElement('div');
             pomodoroContainer.className = 'pomodoro-container';
-            
+
             if (pomodoroCount === 0) {
                 const noPomodoroText = document.createElement('span');
                 noPomodoroText.className = 'no-pomodoros';
@@ -391,30 +189,30 @@
                     pomodoroContainer.appendChild(pomodoro);
                 }
             }
-            
+
             const deleteButton = document.createElement('button');
             deleteButton.className = 'btn-delete';
             deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
             deleteButton.onclick = function() { removeTask(taskItem); };
-            
+
             controlsElement.appendChild(pomodoroContainer);
             controlsElement.appendChild(deleteButton);
-            
+
             // 组装任务项
             taskItem.appendChild(indexElement);
             taskItem.appendChild(contentElement);
             taskItem.appendChild(controlsElement);
-            
+
             // 添加到列表
             todoItems.appendChild(taskItem);
-            
+
             // 初始化拖放事件
             addDragAndDropEvents(taskItem);
-            
+
             // 清空输入框
             taskInput.value = '';
             pomodoroInput.value = '';
-            
+
             // 聚焦到任务输入框
             taskInput.focus();
         }
@@ -424,7 +222,7 @@
             taskItem.style.transition = 'all 0.3s ease';
             taskItem.style.opacity = '0';
             taskItem.style.transform = 'translateX(20px)';
-            
+
             // 动画结束后移除元素
             setTimeout(() => {
                 taskItem.remove();
@@ -442,32 +240,17 @@
         function togglePomodoro(pomodoro, taskItem) {
             const pomodoros = taskItem.querySelectorAll('.pomodoro');
             const index = parseInt(pomodoro.getAttribute('data-index'));
-            
+
             // 检查当前状态
             const isCompleted = pomodoro.classList.contains('completed');
-            
+
             if (isCompleted) {
-                // 已完成 -> 取消自己及之后的完成状态
-                for (let i = index; i < pomodoros.length; i++) {
-                    pomodoros[i].classList.remove('completed');
-                }
+                pomodoro.classList.remove('completed');
             } else {
-                // 未完成 -> 完成自己及之前的所有
-                for (let i = 0; i <= index; i++) {
-                    pomodoros[i].classList.add('completed');
-                }
-            }
-            
-            // 更新任务完成状态
-            const allCompleted = Array.from(pomodoros).every(p => p.classList.contains('completed'));
-            if (allCompleted) {
-                taskItem.classList.add('todo-completed');
-            } else {
-                taskItem.classList.remove('todo-completed');
+                pomodoro.classList.add('completed');
             }
         }
 
-        // 拖拽功能逻辑
         function addDragAndDropEvents(item) {
             item.addEventListener("dragstart", function(e) {
                 item.classList.add("dragging");
@@ -495,21 +278,26 @@
                 e.preventDefault();
                 if (this !== window.draggedItem && this.tagName === "DIV") {
                     const itemsContainer = this.parentNode;
-                    const isAfter = Array.from(itemsContainer.children).indexOf(this) > 
+                    const isAfter = Array.from(itemsContainer.children).indexOf(this) >
                                     Array.from(itemsContainer.children).indexOf(window.draggedItem);
-                    
+
                     if (isAfter) {
                         itemsContainer.insertBefore(window.draggedItem, this.nextSibling);
                     } else {
                         itemsContainer.insertBefore(window.draggedItem, this);
                     }
-                    
+
                     updateRowNumbers();
                 }
                 this.classList.remove("over");
             });
         }
-        
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        }
     </script>
 </body>
 </html>

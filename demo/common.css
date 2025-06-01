@@ -47,7 +47,7 @@ body {
 }
 
 .form-group {
-    display: flex;
+    /* display: flex; */
     flex-wrap: wrap;
     gap: 12px;
 }
