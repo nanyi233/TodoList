@@ -1,0 +1,179 @@
+/* common.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    background-color: #f5f5f7;
+    color: #1d1d1f;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.header {
+    margin-bottom: 24px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #6e6e73;
+    margin-top: 4px;
+}
+
+.input-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+}
+
+.input-container:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 120px;
+}
+
+.form-label {
+    font-size: 12px;
+    color: #6e6e73;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-input {
+    padding: 12px;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 125, 250, 0.25);
+}
+
+.btn {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background-color: #0071e3;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #0066cc;
+}
+
+.btn-primary:active {
+    background-color: #0050a0;
+}
+
+.btn-delete {
+    background-color: transparent;
+    color: #ff3b30;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.btn-delete:hover {
+    background-color: rgba(255, 59, 48, 0.1);
+}
+
+.btn-delete:active {
+    background-color: rgba(255, 59, 48, 0.2);
+}
+
+.pomodoro-container {
+    display: flex;
+    gap: 6px;
+}
+
+.pomodoro {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #d2d2d7;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.pomodoro:hover {
+    background-color: rgba(0, 125, 250, 0.1);
+    border-color: #0071e3;
+}
+
+.pomodoro.completed {
+    background-color: #0071e3;
+    border-color: #0071e3;
+}
+
+.no-pomodoros {
+    color: #6e6e73;
+    font-size: 14px;
+}
+
+.divider {
+    height: 1px;
+    background-color: #f5f5f7;
+    margin: 12px 0;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 移动端适配 */
+@media (max-width: 600px) {
+    .container {
+        padding: 16px;
+    }
+    .pomodoro {
+        width: 16px;
+        height: 16px;
+    }
+}
