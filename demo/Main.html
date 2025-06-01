@@ -121,16 +121,21 @@
             <div class="text-primary text-6xl mb-4"><i class="fa fa-tomato"></i></div>
             <div class="text-4xl md:text-5xl font-bold mb-6" id="timer">25:00</div>
             
-            <div class="flex space-x-4 mb-6">
-              <button class="bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
+            <div class="flex flex-col space-y-4 w-full max-w-md mx-auto">
+              <button class="bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 w-full" id="startButton">
                 <i class="fa fa-play mr-2"></i>开始专注
               </button>
-              <button class="bg-gray-200 text-gray-700 px-6 py-3 rounded-full hover:bg-gray-300 transition-colors duration-200">
-                <i class="fa fa-pause mr-2"></i>暂停
-              </button>
+              
+              <!-- 修改为按钮组样式的时间选择器 -->
+              <div class="flex space-x-2">
+                <button class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1" data-duration="15">15分钟</button>
+                <button class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1" data-duration="20">20分钟</button>
+                <button class="time-option bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200 flex-1" data-duration="25">25分钟</button>
+                <button class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1" data-duration="30">30分钟</button>
+              </div>
             </div>
             
-            <div class="flex space-x-2 text-sm text-gray-500">
+            <div class="flex space-x-2 text-sm text-gray-500 mt-6">
               <span class="px-3 py-1 rounded-full bg-gray-100">专注模式</span>
               <span class="px-3 py-1 rounded-full bg-gray-100">已完成: 3/4</span>
             </div>
@@ -380,29 +385,100 @@
         });
       });
     });
-    
-    // 简单的倒计时效果演示
+
+    // 计时功能代码
     const timerElement = document.getElementById('timer');
-    let minutes = 25;
-    let seconds = 0;
-    
-    function updateTimer() {
-      seconds--;
-      if (seconds < 0) {
-        seconds = 59;
-        minutes--;
-      }
-      
-      if (minutes < 0) {
-        minutes = 25;
-        seconds = 0;
-      }
-      
+    const startButton = document.getElementById('startButton');
+    const timeOptions = document.querySelectorAll('.time-option');
+    let timerInterval; // 计时器句柄
+    let isRunning = false; // 运行状态
+    let remainingTime = 25 * 60; // 初始时间（秒）
+
+    // 初始化显示时间
+    function updateDisplay() {
+      const minutes = Math.floor(remainingTime / 60);
+      const seconds = remainingTime % 60;
       timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
-    
-    // 每1000毫秒更新一次计时器
-    setInterval(updateTimer, 1000);
+
+    // 开始计时
+    function startTimer() {
+      if (!isRunning) {
+        isRunning = true;
+        timerInterval = setInterval(() => {
+          remainingTime--;
+          updateDisplay();
+          
+          if (remainingTime <= 0) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            alert('番茄钟结束！');
+            updateDisplay();
+          }
+        }, 1000);
+        startButton.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停专注';
+        // 禁用时间选择按钮
+        timeOptions.forEach(option => {
+          option.disabled = true;
+          option.classList.add('opacity-50', 'cursor-not-allowed');
+        });
+      } else {
+        pauseTimer();
+        startButton.innerHTML = '<i class="fa fa-play mr-2"></i>继续专注';
+        // 启用时间选择按钮
+        timeOptions.forEach(option => {
+          option.disabled = false;
+          option.classList.remove('opacity-50', 'cursor-not-allowed');
+        });
+      }
+    }
+
+    // 暂停计时
+    function pauseTimer() {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        startButton.innerHTML = '<i class="fa fa-play mr-2"></i>继续专注';
+        // 启用时间选择按钮
+        timeOptions.forEach(option => {
+          option.disabled = false;
+          option.classList.remove('opacity-50', 'cursor-not-allowed');
+        });
+      }
+    }
+
+    // 选择番茄时长
+    timeOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        // 移除所有按钮的选中状态
+        timeOptions.forEach(opt => {
+          opt.classList.remove('bg-primary', 'text-white');
+          opt.classList.add('bg-gray-200', 'text-gray-700');
+        });
+        
+        // 设置当前按钮为选中状态
+        this.classList.remove('bg-gray-200', 'text-gray-700');
+        this.classList.add('bg-primary', 'text-white');
+        
+        // 更新剩余时间
+        remainingTime = parseInt(this.dataset.duration) * 60;
+        updateDisplay();
+        
+        // 如果计时器正在运行，暂停它
+        if (isRunning) {
+          pauseTimer();
+        }
+      });
+    });
+
+    // 按钮事件绑定
+    startButton.addEventListener('click', startTimer);
+
+    // 初始化设置：页面加载时暂停状态
+    window.onload = () => {
+      updateDisplay();
+      pauseTimer(); // 确保初始为暂停状态
+    };
   </script>
 </body>
 </html>
