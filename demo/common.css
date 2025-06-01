@@ -95,16 +95,16 @@ body {
 }
 
 .btn-primary {
-    background-color: #0071e3;
+    background-color: #FF3B30;
     color: #ffffff;
 }
 
 .btn-primary:hover {
-    background-color: #0066cc;
+    background-color: rgb(206, 65, 58);
 }
 
 .btn-primary:active {
-    background-color: #0050a0;
+    background-color: #91231d;
 }
 
 .btn-delete {

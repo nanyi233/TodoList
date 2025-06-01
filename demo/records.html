@@ -256,25 +256,7 @@
 
             // 番茄数
             const pomodoroCell = document.createElement('td');
-            const pomodoroContainer = document.createElement('div');
-            pomodoroContainer.className = 'pomodoro-container';
-
-            if (pomodoroCount === 0) {
-                const noPomodoroText = document.createElement('span');
-                noPomodoroText.className = 'no-pomodoros';
-                noPomodoroText.textContent = '0';
-                pomodoroContainer.appendChild(noPomodoroText);
-            } else {
-                for (let i = 0; i < pomodoroCount; i++) {
-                    const pomodoro = document.createElement('div');
-                    pomodoro.className = 'pomodoro';
-                    pomodoro.setAttribute('data-index', i);
-                    pomodoro.onclick = function() { togglePomodoro(pomodoro, taskRow); };
-                    pomodoroContainer.appendChild(pomodoro);
-                }
-            }
-
-            pomodoroCell.appendChild(pomodoroContainer);
+            pomodoroCell.textContent = pomodoroCount;
             taskRow.appendChild(pomodoroCell);
 
             // 备注
@@ -375,7 +357,7 @@
                     name: row.querySelector('.task-name').textContent,
                     time: row.cells[1].textContent,
                     type: row.querySelector('.task-type')?.textContent || '',
-                    pomodoro: Array.from(row.querySelectorAll('.pomodoro')).map(p => p.classList.contains('completed')),
+                    pomodoro: parseInt(row.cells[4].textContent),
                     note: row.cells[5].textContent,
                     completed: row.querySelector('.task-name').classList.contains('todo-completed')
                 };
@@ -427,25 +409,7 @@
 
                 // 番茄数
                 const pomodoroCell = document.createElement('td');
-                const pomodoroContainer = document.createElement('div');
-                pomodoroContainer.className = 'pomodoro-container';
-
-                if (task.pomodoro.length === 0) {
-                    const noPomodoroText = document.createElement('span');
-                    noPomodoroText.className = 'no-pomodoros';
-                    noPomodoroText.textContent = '0';
-                    pomodoroContainer.appendChild(noPomodoroText);
-                } else {
-                    task.pomodoro.forEach((completed, index) => {
-                        const pomodoro = document.createElement('div');
-                        pomodoro.className = 'pomodoro' + (completed ? ' completed' : '');
-                        pomodoro.setAttribute('data-index', index);
-                        pomodoro.onclick = function() { togglePomodoro(pomodoro, taskRow); };
-                        pomodoroContainer.appendChild(pomodoro);
-                    });
-                }
-
-                pomodoroCell.appendChild(pomodoroContainer);
+                pomodoroCell.textContent = task.pomodoro;
                 taskRow.appendChild(pomodoroCell);
 
                 // 备注
@@ -468,20 +432,6 @@
                 // 初始化拖放事件
                 addDragAndDropEvents(taskRow);
             });
-        }
-
-        function togglePomodoro(pomodoro, taskRow) {
-            const pomodoros = taskRow.querySelectorAll('.pomodoro');
-            const index = parseInt(pomodoro.getAttribute('data-index'));
-
-            // 检查当前状态
-            const isCompleted = pomodoro.classList.contains('completed');
-
-            if (isCompleted) {
-                pomodoro.classList.remove('completed');
-            } else {
-                pomodoro.classList.add('completed');
-            }
         }
 
         // 页面加载时加载任务
