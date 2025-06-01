@@ -229,72 +229,50 @@
     </div>
   </section>
 
-  <!-- 功能特性 -->
-  <section id="features" class="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
-    <div class="max-w-6xl mx-auto">
+<!-- 功能特性 -->
+<section id="features" class="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+  <div class="max-w-6xl mx-auto">
       <div class="text-center mb-16">
-        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-900 mb-4">强大功能，提升效率</h2>
-        <p class="text-gray-600 max-w-2xl mx-auto text-balance">我们的番茄TODO应用提供了一系列功能，帮助你更好地管理时间和任务</p>
+          <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-900 mb-4">强大功能，提升效率</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto text-balance">我们的番茄TODO应用提供了一系列功能，帮助你更好地管理时间和任务</p>
       </div>
       
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- 功能卡片1 -->
-        <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-            <i class="fa fa-clock-o text-xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">智能番茄钟</h3>
-          <p class="text-gray-600">自动计时、提醒和循环，支持自定义番茄钟时长，满足不同工作需求</p>
-        </div>
-        
-        <!-- 功能卡片2 -->
-        <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-            <i class="fa fa-list-ul text-xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">任务管理</h3>
-          <p class="text-gray-600">创建、编辑和跟踪任务，为每个任务分配番茄钟数量，清晰了解工作进度</p>
-        </div>
-        
-        <!-- 功能卡片3 -->
-        <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-            <i class="fa fa-line-chart text-xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">数据统计</h3>
-          <p class="text-gray-600">记录每日、每周和每月完成的番茄钟数量，生成可视化报表，帮助分析时间使用情况</p>
-        </div>
-        
-        <!-- 功能卡片4 -->
-        <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-            <i class="fa fa-bell text-xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">自定义提醒</h3>
-          <p class="text-gray-600">多种提醒声音和方式可选，确保你不会错过任何一个番茄钟的开始或结束</p>
-        </div>
-        
-        <!-- 功能卡片5 -->
-        <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-            <i class="fa fa-moon-o text-xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">专注模式</h3>
-          <p class="text-gray-600">开启后屏蔽干扰通知，帮助你保持专注，提高工作效率</p>
-        </div>
-        
-        <!-- 功能卡片6 -->
-        <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-            <i class="fa fa-cloud text-xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold mb-3">云端同步</h3>
-          <p class="text-gray-600">数据自动同步到云端，在手机、平板和电脑间无缝切换，随时随地管理时间</p>
-        </div>
+          <!-- 今日代办 -->
+          <a href="todolist.html" class="block">
+              <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
+                      <i class="fa fa-tasks text-xl"></i>
+                  </div>
+                  <h3 class="text-xl font-semibold mb-3">今日代办</h3>
+                  <p class="text-gray-600">创建、管理和跟踪今日待办任务，合理安排时间，确保高效完成工作。</p>
+              </div>
+          </a>
+          
+          <!-- 活动清单 -->
+          <a href="activityInventory.html" class="block">
+              <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
+                      <i class="fa fa-calendar text-xl"></i>
+                  </div>
+                  <h3 class="text-xl font-semibold mb-3">活动清单</h3>
+                  <p class="text-gray-600">记录和规划各类活动，设置截止日期和番茄钟数量，清晰掌握活动进度。</p>
+              </div>
+          </a>
+          
+          <!-- 记录表 -->
+          <a href="records.html" class="block">
+              <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
+                      <i class="fa fa-book text-xl"></i>
+                  </div>
+                  <h3 class="text-xl font-semibold mb-3">记录表</h3>
+                  <p class="text-gray-600">详细记录任务执行情况，包括日期、时间、类型等信息，方便回顾和分析。</p>
+              </div>
+          </a>
       </div>
-    </div>
-  </section>
-
+  </div>
+</section>
   <!-- 页脚 -->
   <footer class="bg-dark text-white py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-6xl mx-auto">
