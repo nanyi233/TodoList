@@ -91,6 +91,18 @@
                 width: 20px;
             }
         }
+
+        .pomodoro {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .pomodoro.completed {
+            background-color: #007aff;
+        }
     </style>
 </head>
 <body>
@@ -238,16 +250,22 @@
         }
 
         function togglePomodoro(pomodoro, taskItem) {
-            const pomodoros = taskItem.querySelectorAll('.pomodoro');
+            const pomodoros = Array.from(taskItem.querySelectorAll('.pomodoro'));
             const index = parseInt(pomodoro.getAttribute('data-index'));
 
             // 检查当前状态
             const isCompleted = pomodoro.classList.contains('completed');
 
             if (isCompleted) {
-                pomodoro.classList.remove('completed');
+                // 从后往前取消勾选
+                for (let i = pomodoros.length - 1; i >= index; i--) {
+                    pomodoros[i].classList.remove('completed');
+                }
             } else {
-                pomodoro.classList.add('completed');
+                // 从前往后勾选
+                for (let i = 0; i <= index; i++) {
+                    pomodoros[i].classList.add('completed');
+                }
             }
         }
 
