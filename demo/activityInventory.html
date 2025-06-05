@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <title>活动清单 - 仿苹果风</title>
@@ -117,7 +118,7 @@
             .activity-index {
                 width: 20px;
             }
-            
+
             .btn-add-to-todo {
                 width: 24px;
                 height: 24px;
@@ -126,6 +127,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -138,8 +140,8 @@
                 <div class="form-row">
                     <div class="form-control">
                         <label for="taskInput" class="form-label">活动名称</label>
-                        <input type="text" id="taskInput" placeholder="输入活动名称（最多15字）" maxlength="15"
-                               class="form-input" onkeydown="handleEnter(event)">
+                        <input type="text" id="taskInput" placeholder="输入活动名称（最多15字）" maxlength="15" class="form-input"
+                            onkeydown="handleEnter(event)">
                     </div>
 
                     <div class="form-control">
@@ -150,13 +152,15 @@
                     <div class="form-control">
                         <label for="pomodoroInput" class="form-label">番茄数量</label>
                         <input type="number" id="pomodoroInput" min="0" max="9" placeholder="番茄数（0~9）"
-                               class="form-input" onkeydown="handleEnter(event)">
+                            class="form-input" onkeydown="handleEnter(event)">
                     </div>
 
                     <div class="form-control" style="flex: 0 0 auto;">
                         <label class="form-label">&nbsp;</label>
                         <button class="btn btn-primary" onclick="addTask()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
@@ -183,27 +187,149 @@
         const pomodoroInput = document.getElementById('pomodoroInput');
         const activityItems = document.getElementById('activityItems');
 
-        function addTask() {
+        // --- 新增或修改的部分从这里开始 ---
+
+        /**
+         * 将当前活动列表保存到 localStorage。
+         * 每个活动包括：唯一ID、活动名称、截止日期、番茄总数、已完成的番茄数。
+         */
+        function saveActivities() {
+            const activities = Array.from(document.querySelectorAll('#activityItems .activity-item')).map(item => {
+                const pomodoros = Array.from(item.querySelectorAll('.pomodoro')).map(p => p.classList.contains('completed'));
+                const actualPomodoroCount = item.querySelector('.no-pomodoros') ? 0 : pomodoros.length;
+                const completedPomodoroCount = pomodoros.filter(c => c).length;
+
+                // 获取截止日期，如果存在，则获取其值，否则为空字符串
+                const deadlineElement = item.querySelector('.activity-date');
+                const rawDeadline = deadlineElement && deadlineElement.dataset.rawDate ? deadlineElement.dataset.rawDate : '';
+
+                return {
+                    id: item.dataset.id,
+                    name: item.querySelector('.activity-name').textContent,
+                    deadline: rawDeadline, // 保存原始的日期字符串
+                    pomodoroCount: actualPomodoroCount,
+                    completedPomodoros: completedPomodoroCount
+                };
+            });
+            localStorage.setItem('activityListTasks', JSON.stringify(activities));
+        }
+
+        /**
+         * 从 localStorage 加载活动列表，并将其渲染到页面上。
+         */
+        function loadActivities() {
+            const activities = JSON.parse(localStorage.getItem('activityListTasks')) || [];
+            activityItems.innerHTML = ''; // 清空当前列表，防止重复加载
+
+            activities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item fade-in';
+                activityItem.setAttribute("draggable", "true");
+                activityItem.setAttribute("data-id", activity.id || Date.now());
+
+                const indexElement = document.createElement('div');
+                indexElement.className = 'activity-index';
+
+                const contentElement = document.createElement('div');
+                contentElement.className = 'activity-content';
+
+                const nameElement = document.createElement('h3');
+                nameElement.className = 'activity-name';
+                nameElement.textContent = activity.name;
+
+                const dateElement = document.createElement('p');
+                dateElement.className = 'activity-date';
+
+                // 重新设置原始日期数据，以便保存时可以再次获取
+                if (activity.deadline) {
+                    const date = new Date(activity.deadline);
+                    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    dateElement.textContent = date.toLocaleDateString('zh-CN', options);
+                    dateElement.dataset.rawDate = activity.deadline; // 保存原始日期字符串
+                } else {
+                    dateElement.textContent = '无截止日期';
+                    dateElement.dataset.rawDate = '';
+                }
+
+                contentElement.appendChild(nameElement);
+                contentElement.appendChild(dateElement);
+
+                const controlsElement = document.createElement('div');
+                controlsElement.className = 'activity-controls';
+
+                const pomodoroContainer = document.createElement('div');
+                pomodoroContainer.className = 'pomodoro-container';
+
+                if (activity.pomodoroCount === 0) {
+                    const noPomodoroText = document.createElement('span');
+                    noPomodoroText.className = 'no-pomodoros';
+                    noPomodoroText.textContent = '0';
+                    pomodoroContainer.appendChild(noPomodoroText);
+                } else {
+                    for (let i = 0; i < activity.pomodoroCount; i++) {
+                        const pomodoro = document.createElement('div');
+                        pomodoro.className = 'pomodoro';
+                        pomodoro.setAttribute('data-index', i);
+                        if (i < activity.completedPomodoros) {
+                            pomodoro.classList.add('completed'); // 设置已完成的番茄钟
+                        }
+                        pomodoro.onclick = function () { togglePomodoro(pomodoro, activityItem); };
+                        pomodoroContainer.appendChild(pomodoro);
+                    }
+                }
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'btn-delete';
+                deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+                deleteButton.onclick = function () { removeActivity(activityItem); }; // 修改为 removeActivity
+
+                const addToTodoButton = document.createElement('button');
+                addToTodoButton.className = 'btn-add-to-todo';
+                addToTodoButton.textContent = '+';
+                addToTodoButton.title = '添加到今日待办';
+                addToTodoButton.onclick = function () {
+                    addToTodo(activity.name, activity.pomodoroCount); // 传递活动名称和番茄数
+                };
+
+                controlsElement.appendChild(pomodoroContainer);
+                controlsElement.appendChild(deleteButton);
+                controlsElement.appendChild(addToTodoButton);
+
+                activityItem.appendChild(indexElement);
+                activityItem.appendChild(contentElement);
+                activityItem.appendChild(controlsElement);
+
+                activityItems.appendChild(activityItem);
+                addDragAndDropEvents(activityItem);
+            });
+            updateRowNumbers(); // 加载后更新序号
+        }
+
+        /**
+         * 添加新活动到列表中。
+         */
+        function addTask() { // 保持原函数名，但逻辑改为添加活动
             const taskName = taskInput.value.trim();
-            const deadline = deadlineInput.value;
-            const pomodoroCount = parseInt(pomodoroInput.value) || 0;
+            const deadline = deadlineInput.value; // 日期字符串
+            const pomodoroCount = parseInt(pomodoroInput.value);
 
-            if (taskName === '') return;
+            if (taskName === '') {
+                alert('活动名称不能为空！');
+                return;
+            }
+            if (isNaN(pomodoroCount) || pomodoroCount < 0 || pomodoroCount > 9) {
+                alert('番茄数必须是0到9之间的数字！');
+                return;
+            }
 
-            let rowNumber = activityItems.children.length + 1;
-
-            // 创建活动项元素
             const activityItem = document.createElement('div');
             activityItem.className = 'activity-item fade-in';
             activityItem.setAttribute("draggable", "true");
-            activityItem.setAttribute("data-id", Date.now()); // 使用时间戳作为唯一ID
+            activityItem.setAttribute("data-id", Date.now());
 
-            // 序号
             const indexElement = document.createElement('div');
             indexElement.className = 'activity-index';
-            indexElement.textContent = rowNumber;
 
-            // 活动内容
             const contentElement = document.createElement('div');
             contentElement.className = 'activity-content';
 
@@ -213,20 +339,19 @@
 
             const dateElement = document.createElement('p');
             dateElement.className = 'activity-date';
-
-            // 格式化日期
             if (deadline) {
                 const date = new Date(deadline);
                 const options = { year: 'numeric', month: 'long', day: 'numeric' };
                 dateElement.textContent = date.toLocaleDateString('zh-CN', options);
+                dateElement.dataset.rawDate = deadline; // 保存原始日期字符串到 dataset
             } else {
                 dateElement.textContent = '无截止日期';
+                dateElement.dataset.rawDate = '';
             }
 
             contentElement.appendChild(nameElement);
             contentElement.appendChild(dateElement);
 
-            // 番茄计数和删除按钮以及添加到今日代办按钮
             const controlsElement = document.createElement('div');
             controlsElement.className = 'activity-controls';
 
@@ -243,7 +368,7 @@
                     const pomodoro = document.createElement('div');
                     pomodoro.className = 'pomodoro';
                     pomodoro.setAttribute('data-index', i);
-                    pomodoro.onclick = function() { togglePomodoro(pomodoro, activityItem); };
+                    pomodoro.onclick = function () { togglePomodoro(pomodoro, activityItem); };
                     pomodoroContainer.appendChild(pomodoro);
                 }
             }
@@ -251,14 +376,13 @@
             const deleteButton = document.createElement('button');
             deleteButton.className = 'btn-delete';
             deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-            deleteButton.onclick = function() { removeTask(activityItem); };
+            deleteButton.onclick = function () { removeActivity(activityItem); }; // 修改为 removeActivity
 
-            // 创建添加到今日代办按钮（改为+号）
             const addToTodoButton = document.createElement('button');
             addToTodoButton.className = 'btn-add-to-todo';
             addToTodoButton.textContent = '+';
-            addToTodoButton.title = '添加到今日代办'; // 添加tooltip提示
-            addToTodoButton.onclick = function() {
+            addToTodoButton.title = '添加到今日待办';
+            addToTodoButton.onclick = function () {
                 addToTodo(taskName, pomodoroCount);
             };
 
@@ -266,39 +390,42 @@
             controlsElement.appendChild(deleteButton);
             controlsElement.appendChild(addToTodoButton);
 
-            // 组装活动项
             activityItem.appendChild(indexElement);
             activityItem.appendChild(contentElement);
             activityItem.appendChild(controlsElement);
 
-            // 添加到列表
             activityItems.appendChild(activityItem);
 
-            // 初始化拖放事件
             addDragAndDropEvents(activityItem);
 
-            // 清空输入框
             taskInput.value = '';
             deadlineInput.value = '';
             pomodoroInput.value = '';
-
-            // 聚焦到活动输入框
             taskInput.focus();
+
+            updateRowNumbers(); // 添加活动后更新序号
+            saveActivities(); // 添加活动后保存数据
         }
 
-        function removeTask(activityItem) {
-            // 添加淡出动画
+        /**
+         * 从列表中移除一个活动。
+         * @param {HTMLElement} activityItem - 要移除的活动元素。
+         */
+        function removeActivity(activityItem) { // 修改函数名为 removeActivity
             activityItem.style.transition = 'all 0.3s ease';
             activityItem.style.opacity = '0';
             activityItem.style.transform = 'translateX(20px)';
 
-            // 动画结束后移除元素
             setTimeout(() => {
                 activityItem.remove();
-                updateRowNumbers();
+                updateRowNumbers(); // 移除活动后更新所有序号
+                saveActivities(); // 移除活动后保存数据
             }, 300);
         }
 
+        /**
+         * 更新所有活动项的序号。
+         */
         function updateRowNumbers() {
             const items = document.querySelectorAll('.activity-item');
             items.forEach((item, index) => {
@@ -306,49 +433,66 @@
             });
         }
 
+        /**
+         * 切换番茄钟的完成状态。
+         * 注意：这个页面不更新活动项的整体完成状态，只更新番茄钟本身。
+         * @param {HTMLElement} pomodoro - 被点击的番茄钟元素。
+         * @param {HTMLElement} activityItem - 番茄钟所属的活动元素。
+         */
         function togglePomodoro(pomodoro, activityItem) {
-            const pomodoros = activityItem.querySelectorAll('.pomodoro');
+            const pomodoros = Array.from(activityItem.querySelectorAll('.pomodoro'));
             const index = parseInt(pomodoro.getAttribute('data-index'));
 
-            // 检查当前状态
             const isCompleted = pomodoro.classList.contains('completed');
 
             if (isCompleted) {
-                pomodoro.classList.remove('completed');
+                // 如果当前番茄已完成，则取消当前番茄及之后的所有番茄的完成状态
+                for (let i = pomodoros.length - 1; i >= index; i--) {
+                    pomodoros[i].classList.remove('completed');
+                }
             } else {
-                pomodoro.classList.add('completed');
+                // 如果当前番茄未完成，则完成当前番茄及之前的所有番茄
+                for (let i = 0; i <= index; i++) {
+                    pomodoros[i].classList.add('completed');
+                }
             }
+            saveActivities(); // 番茄钟状态改变后保存数据
         }
 
+        /**
+         * 为活动项添加拖放事件监听器。
+         * @param {HTMLElement} item - 要添加拖放事件的活动元素。
+         */
         function addDragAndDropEvents(item) {
-            item.addEventListener("dragstart", function(e) {
+            item.addEventListener("dragstart", function (e) {
                 item.classList.add("dragging");
                 e.dataTransfer.setData("text/plain", null); // 必要的 hack 来启用拖拽
                 window.draggedItem = item;
             });
 
-            item.addEventListener("dragend", function() {
+            item.addEventListener("dragend", function () {
                 item.classList.remove("dragging");
                 window.draggedItem = null;
+                saveActivities(); // 拖放操作结束后保存数据
             });
 
-            item.addEventListener("dragover", function(e) {
+            item.addEventListener("dragover", function (e) {
                 e.preventDefault();
                 if (this !== window.draggedItem) {
                     this.classList.add("over");
                 }
             });
 
-            item.addEventListener("dragleave", function() {
+            item.addEventListener("dragleave", function () {
                 this.classList.remove("over");
             });
 
-            item.addEventListener("drop", function(e) {
+            item.addEventListener("drop", function (e) {
                 e.preventDefault();
                 if (this !== window.draggedItem && this.tagName === "DIV") {
                     const itemsContainer = this.parentNode;
                     const isAfter = Array.from(itemsContainer.children).indexOf(this) >
-                                    Array.from(itemsContainer.children).indexOf(window.draggedItem);
+                        Array.from(itemsContainer.children).indexOf(window.draggedItem);
 
                     if (isAfter) {
                         itemsContainer.insertBefore(window.draggedItem, this.nextSibling);
@@ -356,92 +500,63 @@
                         itemsContainer.insertBefore(window.draggedItem, this);
                     }
 
-                    updateRowNumbers();
+                    updateRowNumbers(); // 拖放后更新序号
+                    saveActivities(); // 拖放后保存数据
                 }
                 this.classList.remove("over");
             });
         }
 
+        /**
+         * 处理输入框的回车键按下事件。
+         * @param {KeyboardEvent} e - 键盘事件对象。
+         */
         function handleEnter(e) {
             if (e.key === 'Enter') {
                 addTask();
             }
         }
 
+        /**
+         * 将活动添加到“今日待办”列表的 localStorage 中。
+         * @param {string} taskName - 任务名称。
+         * @param {number} pomodoroCount - 番茄数量。
+         */
         function addToTodo(taskName, pomodoroCount) {
-            const todoItems = document.getElementById('todoItems');
-            if (!todoItems) {
-                console.error('未找到今日待办列表容器');
+            // 从 localStorage 获取今日待办列表
+            const todoTasks = JSON.parse(localStorage.getItem('todoListTasks')) || [];
+
+            // 检查是否已经存在同名任务，防止重复添加（可选，根据需求决定是否需要）
+            const isDuplicate = todoTasks.some(task => task.name === taskName);
+            if (isDuplicate) {
+                alert(`“${taskName}”已在今日待办列表中！`);
                 return;
             }
 
-            let rowNumber = todoItems.children.length + 1;
+            // 创建新的待办任务对象
+            const newTodoTask = {
+                id: Date.now().toString(), // 为今日待办任务生成一个唯一ID
+                name: taskName,
+                pomodoroCount: pomodoroCount,
+                completedPomodoros: 0, // 新添加到今日待办的任务，番茄钟默认未完成
+                completed: false
+            };
 
-            // 创建任务项元素
-            const taskItem = document.createElement('div');
-            taskItem.className = 'todo-item fade-in';
-            taskItem.setAttribute("draggable", "true");
-            taskItem.setAttribute("data-id", Date.now()); // 使用时间戳作为唯一ID
+            // 添加到数组并保存回 localStorage
+            todoTasks.push(newTodoTask);
+            localStorage.setItem('todoListTasks', JSON.stringify(todoTasks));
 
-            // 序号
-            const indexElement = document.createElement('div');
-            indexElement.className = 'todo-index';
-            indexElement.textContent = rowNumber;
+            alert(`“${taskName}”已添加到今日待办！`);
 
-            // 任务内容
-            const contentElement = document.createElement('div');
-            contentElement.className = 'todo-content';
-
-            const nameElement = document.createElement('h3');
-            nameElement.className = 'todo-name';
-            nameElement.textContent = taskName;
-
-            contentElement.appendChild(nameElement);
-
-            // 番茄计数和删除按钮
-            const controlsElement = document.createElement('div');
-            controlsElement.className = 'todo-controls';
-
-            const pomodoroContainer = document.createElement('div');
-            pomodoroContainer.className = 'pomodoro-container';
-
-            if (pomodoroCount === 0) {
-                const noPomodoroText = document.createElement('span');
-                noPomodoroText.className = 'no-pomodoros';
-                noPomodoroText.textContent = '0';
-                pomodoroContainer.appendChild(noPomodoroText);
-            } else {
-                for (let i = 0; i < pomodoroCount; i++) {
-                    const pomodoro = document.createElement('div');
-                    pomodoro.className = 'pomodoro';
-                    pomodoro.setAttribute('data-index', i);
-                    pomodoro.onclick = function() { togglePomodoro(pomodoro, taskItem); };
-                    pomodoroContainer.appendChild(pomodoro);
-                }
-            }
-
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'btn-delete';
-            deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-            deleteButton.onclick = function() { removeTask(taskItem); };
-
-            controlsElement.appendChild(pomodoroContainer);
-            controlsElement.appendChild(deleteButton);
-
-            // 组装任务项
-            taskItem.appendChild(indexElement);
-            taskItem.appendChild(contentElement);
-            taskItem.appendChild(controlsElement);
-
-            // 添加到列表
-            todoItems.appendChild(taskItem);
-
-            // 初始化拖放事件
-            addDragAndDropEvents(taskItem);
-
-            // 更新行号
-            updateRowNumbers();
+            // 理论上，如果“今日待办”页面是打开的，它应该监听 localStorage 变化并自动更新
+            // 但为了简单起见，这里只修改 localStorage
         }
+
+        // 页面加载完成时，从 localStorage 加载活动
+        window.addEventListener('DOMContentLoaded', loadActivities);
+
+        // --- 新增或修改的部分到此结束 ---
     </script>
 </body>
+
 </html>

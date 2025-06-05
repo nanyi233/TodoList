@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <title>RECORDS（记录表）</title>
@@ -30,7 +31,8 @@
             border-collapse: collapse;
         }
 
-        .todo-table th, .todo-table td {
+        .todo-table th,
+        .todo-table td {
             padding: 16px;
             text-align: left;
             border-bottom: 1px solid #f5f5f7;
@@ -109,13 +111,15 @@
                 flex: 1 1 100%;
             }
 
-            .todo-table th, .todo-table td {
+            .todo-table th,
+            .todo-table td {
                 padding: 12px 8px;
                 font-size: 14px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -127,8 +131,8 @@
             <div class="form-group">
                 <div class="form-control">
                     <label for="taskInput" class="form-label">任务名称</label>
-                    <input type="text" id="taskInput" placeholder="输入任务名称（最多15字）" maxlength="15"
-                           class="form-input" onkeydown="handleEnter(event)">
+                    <input type="text" id="taskInput" placeholder="输入任务名称（最多15字）" maxlength="15" class="form-input"
+                        onkeydown="handleEnter(event)">
                 </div>
 
                 <div class="form-control">
@@ -149,8 +153,8 @@
 
                 <div class="form-control">
                     <label for="pomodoroInput" class="form-label">番茄数</label>
-                    <input type="number" id="pomodoroInput" min="0" max="9" placeholder="番茄数（0~9）"
-                           class="form-input" onkeydown="handleEnter(event)">
+                    <input type="number" id="pomodoroInput" min="0" max="9" placeholder="番茄数（0~9）" class="form-input"
+                        onkeydown="handleEnter(event)">
                 </div>
 
                 <div class="form-control">
@@ -161,7 +165,8 @@
                 <div class="form-control" style="flex: 0 0 auto;">
                     <label class="form-label">&nbsp;</label>
                     <button class="btn btn-primary" onclick="addTask()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
@@ -188,7 +193,6 @@
                     </tr>
                 </thead>
                 <tbody id="todoItems">
-                    <!-- 动态添加的任务将插入到这里 -->
                 </tbody>
             </table>
         </div>
@@ -219,7 +223,23 @@
             const pomodoroCount = parseInt(pomodoroInput.value) || 0;
             const noteText = noteInput.value;
 
-            if (taskName === '') return;
+            if (taskName === '') {
+                alert('任务名称不能为空！'); // 提示用户任务名称不能为空
+                return;
+            }
+            if (taskTime === '') {
+                alert('请选择时间！'); // 提示用户时间不能为空
+                return;
+            }
+            if (taskType === '') {
+                alert('请选择任务类型！'); // 提示用户任务类型不能为空
+                return;
+            }
+            if (pomodoroCount === 0 && pomodoroInput.value !== '0') { // 检查是否是有效的番茄数输入
+                alert('番茄数必须是0到9之间的数字！');
+                return;
+            }
+
 
             const taskRow = document.createElement('tr');
             taskRow.className = 'fade-in';
@@ -269,7 +289,7 @@
             const deleteButton = document.createElement('button');
             deleteButton.className = 'btn-delete';
             deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-            deleteButton.onclick = function() { removeTask(taskRow); };
+            deleteButton.onclick = function () { removeTask(taskRow); };
             actionCell.appendChild(deleteButton);
             taskRow.appendChild(actionCell);
 
@@ -308,36 +328,36 @@
         }
 
         function addDragAndDropEvents(row) {
-            row.addEventListener("dragstart", function(e) {
+            row.addEventListener("dragstart", function (e) {
                 row.classList.add("dragging");
                 e.dataTransfer.setData("text/plain", null); // 必要的 hack 来启用拖拽
                 window.draggedRow = row;
             });
 
-            row.addEventListener("dragend", function() {
+            row.addEventListener("dragend", function () {
                 row.classList.remove("dragging");
                 window.draggedRow = null;
                 // 更新本地存储
                 saveTasks();
             });
 
-            row.addEventListener("dragover", function(e) {
+            row.addEventListener("dragover", function (e) {
                 e.preventDefault();
                 if (this !== window.draggedRow) {
                     this.classList.add("over");
                 }
             });
 
-            row.addEventListener("dragleave", function() {
+            row.addEventListener("dragleave", function () {
                 this.classList.remove("over");
             });
 
-            row.addEventListener("drop", function(e) {
+            row.addEventListener("drop", function (e) {
                 e.preventDefault();
                 if (this !== window.draggedRow && this.tagName === "TR") {
                     const tableBody = this.parentNode;
                     const isAfter = Array.from(tableBody.children).indexOf(this) >
-                                    Array.from(tableBody.children).indexOf(window.draggedRow);
+                        Array.from(tableBody.children).indexOf(window.draggedRow);
 
                     if (isAfter) {
                         tableBody.insertBefore(window.draggedRow, this.nextSibling);
@@ -346,6 +366,7 @@
                     }
                 }
                 this.classList.remove("over");
+                saveTasks(); // 拖放结束后保存任务顺序
             });
         }
 
@@ -358,11 +379,11 @@
                     time: row.cells[1].textContent,
                     type: row.querySelector('.task-type')?.textContent || '',
                     pomodoro: parseInt(row.cells[4].textContent),
-                    note: row.cells[5].textContent,
-                    completed: row.querySelector('.task-name').classList.contains('todo-completed')
+                    note: row.cells[5].textContent === '-' ? '' : row.cells[5].textContent, // 将 '-' 转换回空字符串
+                    completed: row.querySelector('.task-name').classList.contains('todo-completed'),
+                    date: row.cells[0].textContent // 保存日期
                 };
             });
-
             localStorage.setItem('recordTasks', JSON.stringify(tasks));
         }
 
@@ -370,15 +391,19 @@
             const tasks = JSON.parse(localStorage.getItem('recordTasks')) || [];
 
             tasks.forEach(task => {
-                // 重建任务行
+                // 如果是旧的日期，则跳过不加载（只加载今天的任务）
+                if (task.date && task.date !== today) {
+                    return;
+                }
+
                 const taskRow = document.createElement('tr');
                 taskRow.className = 'fade-in';
                 taskRow.setAttribute("draggable", "true");
-                taskRow.setAttribute("data-id", task.id);
+                taskRow.setAttribute("data-id", task.id || Date.now()); // 如果没有ID，则生成一个
 
                 // 日期
                 const dateCell = document.createElement('td');
-                dateCell.textContent = today;
+                dateCell.textContent = task.date || today; // 使用保存的日期或今天的日期
                 taskRow.appendChild(dateCell);
 
                 // 时间
@@ -414,7 +439,7 @@
 
                 // 备注
                 const noteCell = document.createElement('td');
-                noteCell.textContent = task.note;
+                noteCell.textContent = task.note || "-"; // 如果备注为空，显示 '-'
                 taskRow.appendChild(noteCell);
 
                 // 删除按钮
@@ -422,7 +447,7 @@
                 const deleteButton = document.createElement('button');
                 deleteButton.className = 'btn-delete';
                 deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-                deleteButton.onclick = function() { removeTask(taskRow); };
+                deleteButton.onclick = function () { removeTask(taskRow); };
                 actionCell.appendChild(deleteButton);
                 taskRow.appendChild(actionCell);
 
@@ -438,4 +463,5 @@
         window.addEventListener('DOMContentLoaded', loadTasks);
     </script>
 </body>
+
 </html>
