@@ -164,7 +164,7 @@
 
             <div class="flex space-x-2 text-sm text-gray-500 mt-6">
               <span class="px-3 py-1 rounded-full bg-gray-100" id="modeDisplay">专注模式</span>
-              <span class="px-3 py-1 rounded-full bg-gray-100">已完成: 3/4</span>
+              <span class="px-3 py-1 rounded-full bg-gray-100" id="completedCyclesDisplay">已完成: 0/4</span>
             </div>
           </div>
         </div>
@@ -172,19 +172,19 @@
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
         <div class="bg-white rounded-xl p-4 shadow-apple text-center">
-          <div class="text-2xl font-bold text-primary mb-1">128</div>
+          <div class="text-2xl font-bold text-primary mb-1" id="todayPomodoros">0</div>
           <div class="text-sm text-gray-500">今日番茄钟</div>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-apple text-center">
-          <div class="text-2xl font-bold text-primary mb-1">4.2h</div>
+          <div class="text-2xl font-bold text-primary mb-1" id="focusTime">0h</div>
           <div class="text-sm text-gray-500">专注时间</div>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-apple text-center">
-          <div class="text-2xl font-bold text-primary mb-1">87%</div>
+          <div class="text-2xl font-bold text-primary mb-1" id="completionRate">0%</div>
           <div class="text-sm text-gray-500">完成率</div>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-apple text-center">
-          <div class="text-2xl font-bold text-primary mb-1">12</div>
+          <div class="text-2xl font-bold text-primary mb-1" id="tasksCompleted">0</div>
           <div class="text-sm text-gray-500">任务完成</div>
         </div>
       </div>
@@ -394,13 +394,29 @@
     const timeOptionsGroup = document.getElementById('timeOptionsGroup');
     const skipBreakButton = document.getElementById('skipBreakButton');
     const modeDisplay = document.getElementById('modeDisplay');
+    const completedCyclesDisplay = document.getElementById('completedCyclesDisplay'); // 新增：已完成循环显示
+
+    // 统计数据 DOM 元素
+    const todayPomodorosElement = document.getElementById('todayPomodoros');
+    const focusTimeElement = document.getElementById('focusTime');
+    const completionRateElement = document.getElementById('completionRate');
+    const tasksCompletedElement = document.getElementById('tasksCompleted');
 
     let timerInterval; // 计时器句柄
     let isRunning = false; // 运行状态
     let isBreakRunning = false; // 是否在休息状态
+
     let defaultFocusTime = 25 * 60; // 默认专注时间 (25分钟)
     let defaultBreakTime = 5 * 60; // 默认休息时间 (5分钟)
     let remainingTime = defaultFocusTime; // 当前剩余时间（秒）
+    let currentFocusDuration = 0; // 当前专注时长的原始秒数，用于统计
+
+    // 统计数据变量
+    let todayPomodoros = 0; // 今日完成的番茄钟数量
+    let totalFocusSeconds = 0; // 今日累计专注时间（秒）
+    let tasksCompleted = 0; // 今日完成的任务数量 (这里假设一个番茄钟完成一个任务，你可以根据实际需求调整)
+    let completedFocusCycles = 0; // 已完成的专注循环数 (用于 4 次循环长休息)
+    const totalTasksPlanned = 4; // 假设今天计划完成4个任务，用于计算完成率
 
     // 音频元素，路径已更正为 /Image/music.mp3
     const audio = new Audio('/Image/music.mp3');
@@ -410,6 +426,18 @@
       const minutes = Math.floor(remainingTime / 60);
       const seconds = remainingTime % 60;
       timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // 更新统计数据显示
+    function updateStatsDisplay() {
+      todayPomodorosElement.textContent = todayPomodoros;
+      focusTimeElement.textContent = `${(totalFocusSeconds / 3600).toFixed(1)}h`; // 转换为小时，保留一位小数
+      // 完成率计算：已完成番茄钟数 / (已完成番茄钟数 + 未完成番茄钟数) * 100
+      // 这里我们简化为：今日番茄钟 / 计划任务数 * 100，如果计划任务数是动态的需要调整
+      let rate = (totalTasksPlanned > 0) ? (todayPomodoros / totalTasksPlanned * 100) : 0;
+      completionRateElement.textContent = `${rate.toFixed(0)}%`; // 完成率，不带小数
+      tasksCompletedElement.textContent = tasksCompleted;
+      completedCyclesDisplay.textContent = `已完成: ${completedFocusCycles}/4`;
     }
 
     // 请求通知权限
@@ -443,7 +471,7 @@
     }
 
     function setBreakModeUI() {
-      startButton.innerHTML = '<i class="fa fa-play mr-2"></i>开始休息';
+      startButton.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停休息'; // 休息开始时自动开始
       modeDisplay.textContent = '休息模式';
       timeOptionsGroup.classList.add('hidden');
       skipBreakButton.classList.remove('hidden');
@@ -474,6 +502,7 @@
           startButton.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停休息';
         } else {
           startButton.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停专注';
+          currentFocusDuration = remainingTime; // 记录本次专注的原始时长
         }
 
         // 禁用时间选择按钮
@@ -502,6 +531,13 @@
               stopAndResetTimer(); // 休息结束，重置为专注模式
             } else {
               // 专注时间结束
+              todayPomodoros++; // 完成一个番茄钟
+              totalFocusSeconds += currentFocusDuration; // 累加专注时间
+              tasksCompleted++; // 假设完成一个番茄钟完成一个任务
+              completedFocusCycles++; // 完成专注循环数
+
+              updateStatsDisplay(); // 更新统计数据
+
               if (Notification.permission === "granted") {
                 new Notification('番茄钟结束！', {
                   body: '恭喜你完成了一个专注时段！现在是休息时间。',
@@ -582,6 +618,7 @@
       updateDisplay();
       pauseTimer(); // 确保初始为暂停状态
       setFocusModeUI(); // 初始显示专注模式UI
+      updateStatsDisplay(); // 初始化统计数据
       requestNotificationPermission(); // 页面加载时请求通知权限
     };
   </script>

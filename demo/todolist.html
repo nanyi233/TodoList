@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="common.css">
     <style>
+        /* 保持原有的样式 */
         .todo-list {
             background-color: #ffffff;
             border-radius: 12px;
@@ -24,6 +25,10 @@
             font-weight: 500;
             color: #6e6e73;
             margin: 0;
+            display: inline-block;
+            /* 允许与旁边的元素同行 */
+            vertical-align: middle;
+            /* 垂直对齐 */
         }
 
         .todo-item {
@@ -104,14 +109,83 @@
         .pomodoro.completed {
             background-color: #007aff;
         }
+
+        /* 新增的样式 */
+        .header {
+            display: flex;
+            /* 使用 Flexbox */
+            justify-content: space-between;
+            /* 元素之间留出空间 */
+            align-items: center;
+            /* 垂直居中对齐 */
+            margin-bottom: 24px;
+            /* 标题与下方内容间距 */
+            position: relative;
+            /* 确保子元素可以相对于它定位 */
+        }
+
+        .main-page-link {
+            font-size: 14px;
+            color: #007aff;
+            /* 苹果蓝 */
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background-color: #e5f1ff;
+            /* 浅蓝色背景 */
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+            /* 防止文本换行 */
+            display: inline-flex;
+            /* 使内部元素垂直居中 */
+            align-items: center;
+            gap: 4px;
+            /* 图标和文字的间距 */
+        }
+
+        .main-page-link:hover {
+            background-color: #d1e5ff;
+            /* 悬停时的深蓝色背景 */
+        }
+
+        .main-page-link svg {
+            width: 16px;
+            height: 16px;
+            stroke: #007aff;
+        }
+
+        /* 调整 subtitle 的位置，以免与新链接冲突 */
+        .subtitle {
+            text-align: left;
+            /* 确保副标题在左侧 */
+            margin-top: 4px;
+            /* 与标题保持合适的间距 */
+            width: 100%;
+            /* 确保副标题占据整行 */
+            position: absolute;
+            /* 绝对定位，脱离文档流 */
+            top: 100%;
+            /* 放在标题下方 */
+            left: 0;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">今日待办</h1>
-            <p class="subtitle">管理你的任务和番茄钟</p>
+            <div>
+                <h1 class="title">今日待办</h1>
+                <p class="subtitle">管理你的任务和番茄钟</p>
+            </div>
+            <a href="index.html" class="main-page-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                主页
+            </a>
         </div>
 
         <div class="input-container">
@@ -144,7 +218,6 @@
                 <h2 class="todo-title">待办事项</h2>
             </div>
             <div id="todoItems">
-                <!-- 动态添加的任务将插入到这里 -->
             </div>
         </div>
     </div>
