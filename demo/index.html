@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>番茄TODO | 高效时间管理工具</title>
-  <!-- 引入Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <!-- 引入Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 引入Inter字体 -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- 配置Tailwind -->
+
   <script>
     tailwind.config = {
       theme: {
@@ -44,46 +41,59 @@
       }
     }
   </script>
-  
+
   <style type="text/tailwindcss">
     @layer utilities {
-      .content-auto {
-        content-visibility: auto;
-      }
-      .text-balance {
-        text-wrap: balance;
-      }
-      .backdrop-blur {
-        backdrop-filter: blur(10px);
-      }
-      .glass {
-        background-color: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-      }
-      .glass-dark {
-        background-color: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-      }
-      .animate-float {
-        animation: float 3s ease-in-out infinite;
-      }
-      .animate-pulse-slow {
-        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-    }
-    
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-  </style>
+            .content-auto {
+                content-visibility: auto;
+            }
+
+            .text-balance {
+                text-wrap: balance;
+            }
+
+            .backdrop-blur {
+                backdrop-filter: blur(10px);
+            }
+
+            .glass {
+                background-color: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .glass-dark {
+                background-color: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .animate-float {
+                animation: float 3s ease-in-out infinite;
+            }
+
+            .animate-pulse-slow {
+                animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    </style>
 </head>
 
 <body class="font-inter bg-gray-100 text-dark min-h-screen">
-  <!-- 导航栏 -->
   <header class="fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
     <div class="glass px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between shadow-sm">
       <div class="flex items-center">
@@ -101,7 +111,6 @@
     </div>
   </header>
 
-  <!-- 英雄区域 -->
   <section class="pt-24 pb-16 md:pt-32 md:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white to-gray-100">
     <div class="max-w-6xl mx-auto text-center">
       <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gray-900 leading-tight mb-4">
@@ -110,40 +119,57 @@
       <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-600 max-w-2xl mx-auto mb-8 text-balance">
         采用番茄工作法的高效时间管理工具，帮助你集中注意力，提高生产力
       </p>
-      
-      <!-- 番茄钟卡片 -->
+
       <div class="max-w-2xl mx-auto mb-12">
-        <div class="relative bg-white rounded-2xl shadow-apple-lg overflow-hidden p-6 md:p-8 transform transition-all duration-500 hover:shadow-lg">
+        <div
+          class="relative bg-white rounded-2xl shadow-apple-lg overflow-hidden p-6 md:p-8 transform transition-all duration-500 hover:shadow-lg">
           <div class="absolute -top-12 -right-12 w-40 h-40 bg-primary/10 rounded-full blur-2xl"></div>
           <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-secondary/10 rounded-full blur-2xl"></div>
-          
+
           <div class="relative flex flex-col items-center">
             <div class="text-primary text-6xl mb-4"><i class="fa fa-tomato"></i></div>
             <div class="text-4xl md:text-5xl font-bold mb-6" id="timer">25:00</div>
-            
+
             <div class="flex flex-col space-y-4 w-full max-w-md mx-auto">
-              <button class="bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 w-full" id="startButton">
+              <button
+                class="bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 w-full"
+                id="startButton">
                 <i class="fa fa-play mr-2"></i>开始专注
               </button>
-              
-              <!-- 修改为按钮组样式的时间选择器 -->
-              <div class="flex space-x-2">
-                <button class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1" data-duration="15">15分钟</button>
-                <button class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1" data-duration="20">20分钟</button>
-                <button class="time-option bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200 flex-1" data-duration="25">25分钟</button>
-                <button class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1" data-duration="30">30分钟</button>
+
+              <div class="flex space-x-2" id="timeOptionsGroup">
+                <button
+                  class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1"
+                  data-duration="1">1分钟</button>
+                <button
+                  class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1"
+                  data-duration="15">15分钟</button>
+                <button
+                  class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1"
+                  data-duration="20">20分钟</button>
+                <button
+                  class="time-option bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200 flex-1"
+                  data-duration="25">25分钟</button>
+                <button
+                  class="time-option bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200 flex-1"
+                  data-duration="30">30分钟</button>
               </div>
+
+              <button
+                class="bg-secondary text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 w-full hidden"
+                id="skipBreakButton">
+                <i class="fa fa-forward mr-2"></i>跳过休息
+              </button>
             </div>
-            
+
             <div class="flex space-x-2 text-sm text-gray-500 mt-6">
-              <span class="px-3 py-1 rounded-full bg-gray-100">专注模式</span>
+              <span class="px-3 py-1 rounded-full bg-gray-100" id="modeDisplay">专注模式</span>
               <span class="px-3 py-1 rounded-full bg-gray-100">已完成: 3/4</span>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- 数据统计 -->
+
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
         <div class="bg-white rounded-xl p-4 shadow-apple text-center">
           <div class="text-2xl font-bold text-primary mb-1">128</div>
@@ -165,14 +191,13 @@
     </div>
   </section>
 
-  <!-- 番茄工作法简介 -->
   <section id="overview" class="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-16">
         <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-900 mb-4">什么是番茄工作法？</h2>
         <p class="text-gray-600 max-w-2xl mx-auto text-balance">番茄工作法是一种简单有效的时间管理技术，帮助你提高专注力和生产力</p>
       </div>
-      
+
       <div class="grid md:grid-cols-2 gap-12 items-center">
         <div class="order-2 md:order-1">
           <div class="space-y-6">
@@ -185,7 +210,7 @@
                 <p class="text-gray-600">设定25分钟的工作时间，这段时间内专注于单一任务，不受任何干扰</p>
               </div>
             </div>
-            
+
             <div class="flex items-start">
               <div class="bg-primary/10 text-primary p-3 rounded-full mr-4">
                 <i class="fa fa-coffee text-xl"></i>
@@ -195,7 +220,7 @@
                 <p class="text-gray-600">完成一个番茄钟后，休息5分钟，放松身心，准备下一个工作周期</p>
               </div>
             </div>
-            
+
             <div class="flex items-start">
               <div class="bg-primary/10 text-primary p-3 rounded-full mr-4">
                 <i class="fa fa-refresh text-xl"></i>
@@ -205,7 +230,7 @@
                 <p class="text-gray-600">每完成4个番茄钟，进行一次较长的休息（15-30分钟），让大脑得到充分恢复</p>
               </div>
             </div>
-            
+
             <div class="flex items-start">
               <div class="bg-primary/10 text-primary p-3 rounded-full mr-4">
                 <i class="fa fa-list-alt text-xl"></i>
@@ -217,9 +242,10 @@
             </div>
           </div>
         </div>
-        
+
         <div class="order-1 md:order-2 relative">
-          <div class="relative z-10 rounded-2xl overflow-hidden shadow-apple-lg transform transition-all duration-500 hover:shadow-lg hover:-translate-y-1">
+          <div
+            class="relative z-10 rounded-2xl overflow-hidden shadow-apple-lg transform transition-all duration-500 hover:shadow-lg hover:-translate-y-1">
             <img src="/Image/封面.png" alt="番茄工作法示意图" class="w-full h-auto rounded-2xl">
           </div>
           <div class="absolute -bottom-6 -right-6 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
@@ -229,51 +255,49 @@
     </div>
   </section>
 
-<!-- 功能特性 -->
-<section id="features" class="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
-  <div class="max-w-6xl mx-auto">
+  <section id="features" class="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <div class="max-w-6xl mx-auto">
       <div class="text-center mb-16">
-          <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-900 mb-4">强大功能，提升效率</h2>
-          <p class="text-gray-600 max-w-2xl mx-auto text-balance">我们的番茄TODO应用提供了一系列功能，帮助你更好地管理时间和任务</p>
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-900 mb-4">强大功能，提升效率</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto text-balance">我们的番茄TODO应用提供了一系列功能，帮助你更好地管理时间和任务</p>
       </div>
-      
+
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- 今日代办 -->
-          <a href="todolist.html" class="block">
-              <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
-                  <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-                      <i class="fa fa-tasks text-xl"></i>
-                  </div>
-                  <h3 class="text-xl font-semibold mb-3">今日代办</h3>
-                  <p class="text-gray-600">创建、管理和跟踪今日待办任务，合理安排时间，确保高效完成工作。</p>
-              </div>
-          </a>
-          
-          <!-- 活动清单 -->
-          <a href="activityInventory.html" class="block">
-              <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
-                  <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-                      <i class="fa fa-calendar text-xl"></i>
-                  </div>
-                  <h3 class="text-xl font-semibold mb-3">活动清单</h3>
-                  <p class="text-gray-600">记录和规划各类活动，设置截止日期和番茄钟数量，清晰掌握活动进度。</p>
-              </div>
-          </a>
-          
-          <!-- 记录表 -->
-          <a href="records.html" class="block">
-              <div class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
-                  <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
-                      <i class="fa fa-book text-xl"></i>
-                  </div>
-                  <h3 class="text-xl font-semibold mb-3">记录表</h3>
-                  <p class="text-gray-600">详细记录任务执行情况，包括日期、时间、类型等信息，方便回顾和分析。</p>
-              </div>
-          </a>
+        <a href="todolist.html" class="block">
+          <div
+            class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+            <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
+              <i class="fa fa-tasks text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">今日代办</h3>
+            <p class="text-gray-600">创建、管理和跟踪今日待办任务，合理安排时间，确保高效完成工作。</p>
+          </div>
+        </a>
+
+        <a href="activityInventory.html" class="block">
+          <div
+            class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+            <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
+              <i class="fa fa-calendar text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">活动清单</h3>
+            <p class="text-gray-600">记录和规划各类活动，设置截止日期和番茄钟数量，清晰掌握活动进度。</p>
+          </div>
+        </a>
+
+        <a href="records.html" class="block">
+          <div
+            class="bg-white rounded-2xl p-6 shadow-apple transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+            <div class="bg-primary/10 text-primary p-3 rounded-full w-fit mb-4">
+              <i class="fa fa-book text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">记录表</h3>
+            <p class="text-gray-600">详细记录任务执行情况，包括日期、时间、类型等信息，方便回顾和分析。</p>
+          </div>
+        </a>
       </div>
-  </div>
-</section>
-  <!-- 页脚 -->
+    </div>
+  </section>
   <footer class="bg-dark text-white py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-6xl mx-auto">
       <div class="grid md:grid-cols-4 gap-8">
@@ -284,7 +308,7 @@
           </div>
           <p class="text-gray-400 text-sm">高效时间管理工具，帮助你集中注意力，提高生产力</p>
         </div>
-        
+
         <div>
           <h3 class="font-semibold mb-4">产品</h3>
           <ul class="space-y-2 text-sm text-gray-400">
@@ -294,7 +318,7 @@
             <li><a href="#" class="hover:text-primary transition-colors duration-200">更新日志</a></li>
           </ul>
         </div>
-        
+
         <div>
           <h3 class="font-semibold mb-4">资源</h3>
           <ul class="space-y-2 text-sm text-gray-400">
@@ -304,7 +328,7 @@
             <li><a href="#" class="hover:text-primary transition-colors duration-200">帮助中心</a></li>
           </ul>
         </div>
-        
+
         <div>
           <h3 class="font-semibold mb-4">联系我们</h3>
           <ul class="space-y-2 text-sm text-gray-400">
@@ -314,7 +338,7 @@
           </ul>
         </div>
       </div>
-      
+
       <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
         <div class="text-sm text-gray-500 mb-4 md:mb-0">
           &copy; 2023 番茄TODO. 保留所有权利.
@@ -337,10 +361,9 @@
     </div>
   </footer>
 
-  <!-- JavaScript -->
   <script>
     // 导航栏滚动效果
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
       const navbar = document.getElementById('navbar');
       if (window.scrollY > 10) {
         navbar.classList.add('shadow-md');
@@ -352,12 +375,12 @@
         navbar.classList.add('py-3');
       }
     });
-    
+
     // 平滑滚动
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        
+
         document.querySelector(this.getAttribute('href')).scrollIntoView({
           behavior: 'smooth'
         });
@@ -368,9 +391,19 @@
     const timerElement = document.getElementById('timer');
     const startButton = document.getElementById('startButton');
     const timeOptions = document.querySelectorAll('.time-option');
+    const timeOptionsGroup = document.getElementById('timeOptionsGroup');
+    const skipBreakButton = document.getElementById('skipBreakButton');
+    const modeDisplay = document.getElementById('modeDisplay');
+
     let timerInterval; // 计时器句柄
     let isRunning = false; // 运行状态
-    let remainingTime = 25 * 60; // 初始时间（秒）
+    let isBreakRunning = false; // 是否在休息状态
+    let defaultFocusTime = 25 * 60; // 默认专注时间 (25分钟)
+    let defaultBreakTime = 5 * 60; // 默认休息时间 (5分钟)
+    let remainingTime = defaultFocusTime; // 当前剩余时间（秒）
+
+    // 音频元素，路径已更正为 /Image/music.mp3
+    const audio = new Audio('/Image/music.mp3');
 
     // 初始化显示时间
     function updateDisplay() {
@@ -379,35 +412,112 @@
       timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
+    // 请求通知权限
+    function requestNotificationPermission() {
+      if (!("Notification" in window)) {
+        console.log("此浏览器不支持桌面通知。");
+      } else if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            console.log("通知权限已授予。");
+          } else {
+            console.log("通知权限已被拒绝。");
+          }
+        });
+      }
+    }
+
+    // 切换按钮和模式显示
+    function setFocusModeUI() {
+      startButton.innerHTML = '<i class="fa fa-play mr-2"></i>开始专注';
+      modeDisplay.textContent = '专注模式';
+      timeOptionsGroup.classList.remove('hidden');
+      skipBreakButton.classList.add('hidden');
+      // 启用时间选择按钮
+      timeOptions.forEach(option => {
+        option.disabled = false;
+        option.classList.remove('opacity-50', 'cursor-not-allowed');
+      });
+      // 默认选中25分钟
+      selectTimeOption(document.querySelector('.time-option[data-duration="25"]'));
+    }
+
+    function setBreakModeUI() {
+      startButton.innerHTML = '<i class="fa fa-play mr-2"></i>开始休息';
+      modeDisplay.textContent = '休息模式';
+      timeOptionsGroup.classList.add('hidden');
+      skipBreakButton.classList.remove('hidden');
+      // 禁用时间选择按钮
+      timeOptions.forEach(option => {
+        option.disabled = true;
+        option.classList.add('opacity-50', 'cursor-not-allowed');
+      });
+    }
+
+    // 停止当前计时器并重置
+    function stopAndResetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      isBreakRunning = false;
+      remainingTime = defaultFocusTime; // 始终重置为默认专注时间
+      updateDisplay();
+      setFocusModeUI(); // 切换到专注模式UI
+    }
+
     // 开始计时
     function startTimer() {
       if (!isRunning) {
+        requestNotificationPermission(); // 每次开始计时前都尝试请求通知权限
+
         isRunning = true;
-        timerInterval = setInterval(() => {
-          remainingTime--;
-          updateDisplay();
-          
-          if (remainingTime <= 0) {
-            clearInterval(timerInterval);
-            isRunning = false;
-            alert('番茄钟结束！');
-            updateDisplay();
-          }
-        }, 1000);
-        startButton.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停专注';
+        if (isBreakRunning) {
+          startButton.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停休息';
+        } else {
+          startButton.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停专注';
+        }
+
         // 禁用时间选择按钮
         timeOptions.forEach(option => {
           option.disabled = true;
           option.classList.add('opacity-50', 'cursor-not-allowed');
         });
+
+        timerInterval = setInterval(() => {
+          remainingTime--;
+          updateDisplay();
+
+          if (remainingTime <= 0) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            audio.play().catch(e => console.error("播放音效失败:", e));
+
+            if (isBreakRunning) {
+              // 休息时间结束
+              if (Notification.permission === "granted") {
+                new Notification('休息时间结束！', {
+                  body: '是时候开始新的专注时段了。',
+                  icon: '/Image/封面.png'
+                });
+              }
+              stopAndResetTimer(); // 休息结束，重置为专注模式
+            } else {
+              // 专注时间结束
+              if (Notification.permission === "granted") {
+                new Notification('番茄钟结束！', {
+                  body: '恭喜你完成了一个专注时段！现在是休息时间。',
+                  icon: '/Image/封面.png'
+                });
+              }
+              // 自动进入休息模式
+              isBreakRunning = true;
+              remainingTime = defaultBreakTime;
+              setBreakModeUI();
+              startTimer(); // 自动开始休息计时
+            }
+          }
+        }, 1000);
       } else {
         pauseTimer();
-        startButton.innerHTML = '<i class="fa fa-play mr-2"></i>继续专注';
-        // 启用时间选择按钮
-        timeOptions.forEach(option => {
-          option.disabled = false;
-          option.classList.remove('opacity-50', 'cursor-not-allowed');
-        });
       }
     }
 
@@ -416,37 +526,52 @@
       if (isRunning) {
         clearInterval(timerInterval);
         isRunning = false;
-        startButton.innerHTML = '<i class="fa fa-play mr-2"></i>继续专注';
-        // 启用时间选择按钮
-        timeOptions.forEach(option => {
-          option.disabled = false;
-          option.classList.remove('opacity-50', 'cursor-not-allowed');
-        });
+        if (isBreakRunning) {
+          startButton.innerHTML = '<i class="fa fa-play mr-2"></i>继续休息';
+        } else {
+          startButton.innerHTML = '<i class="fa fa-play mr-2"></i>继续专注';
+        }
+        // 启用时间选择按钮（仅在专注模式下）
+        if (!isBreakRunning) {
+          timeOptions.forEach(option => {
+            option.disabled = false;
+            option.classList.remove('opacity-50', 'cursor-not-allowed');
+          });
+        }
+      }
+    }
+
+    // 统一处理时间选择按钮的选中状态和时间设置
+    function selectTimeOption(selectedOption) {
+      timeOptions.forEach(opt => {
+        opt.classList.remove('bg-primary', 'text-white');
+        opt.classList.add('bg-gray-200', 'text-gray-700');
+      });
+      selectedOption.classList.remove('bg-gray-200', 'text-gray-700');
+      selectedOption.classList.add('bg-primary', 'text-white');
+
+      defaultFocusTime = parseInt(selectedOption.dataset.duration) * 60;
+      if (!isBreakRunning) { // 只有在专注模式下才更新当前剩余时间
+        remainingTime = defaultFocusTime;
+        updateDisplay();
+      }
+      if (isRunning) { // 如果正在运行，暂停计时器
+        pauseTimer();
       }
     }
 
     // 选择番茄时长
     timeOptions.forEach(option => {
-      option.addEventListener('click', function() {
-        // 移除所有按钮的选中状态
-        timeOptions.forEach(opt => {
-          opt.classList.remove('bg-primary', 'text-white');
-          opt.classList.add('bg-gray-200', 'text-gray-700');
-        });
-        
-        // 设置当前按钮为选中状态
-        this.classList.remove('bg-gray-200', 'text-gray-700');
-        this.classList.add('bg-primary', 'text-white');
-        
-        // 更新剩余时间
-        remainingTime = parseInt(this.dataset.duration) * 60;
-        updateDisplay();
-        
-        // 如果计时器正在运行，暂停它
-        if (isRunning) {
-          pauseTimer();
-        }
+      option.addEventListener('click', function () {
+        selectTimeOption(this);
       });
+    });
+
+    // 跳过休息按钮事件
+    skipBreakButton.addEventListener('click', () => {
+      if (isBreakRunning) {
+        stopAndResetTimer(); // 立即结束休息，重置为专注模式
+      }
     });
 
     // 按钮事件绑定
@@ -456,7 +581,10 @@
     window.onload = () => {
       updateDisplay();
       pauseTimer(); // 确保初始为暂停状态
+      setFocusModeUI(); // 初始显示专注模式UI
+      requestNotificationPermission(); // 页面加载时请求通知权限
     };
   </script>
 </body>
+
 </html>
