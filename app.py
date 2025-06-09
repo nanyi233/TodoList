@@ -1,7 +1,7 @@
-
 from flask import Flask, request, jsonify, send_from_directory
 import os
 from utils.file_handler import read_data, write_data, add_task
+from datetime import datetime  # 补充缺失的导入
 
 app = Flask(__name__)
 
@@ -9,9 +9,25 @@ app = Flask(__name__)
 os.makedirs('data', exist_ok=True)
 
 @app.route('/')
+@app.route('/index.html')  # 添加新路由，使 /index.html 也指向主页
 def index():
     """返回主页面"""
     return send_from_directory('templates', 'index.html')
+
+@app.route('/todolist.html')
+def todolist():
+    """返回今日待办页面"""
+    return send_from_directory('templates', 'todolist.html')
+
+@app.route('/records.html')
+def records():
+    """返回记录表页面"""
+    return send_from_directory('templates', 'records.html')
+
+@app.route('/activityInventory.html')
+def activity_inventory():
+    """返回活动清单页面"""
+    return send_from_directory('templates', 'activityInventory.html')
 
 @app.route('/api/tasks', methods=['GET', 'POST'])
 def tasks():
@@ -29,17 +45,17 @@ def task_detail(task_id):
     """任务详情API（PUT更新任务，DELETE删除任务）"""
     tasks = read_data('data/tasks.json')
     task = next((t for t in tasks if t['id'] == task_id), None)
-    
+
     if not task:
         return jsonify({'error': 'Task not found'}), 404
-    
+
     if request.method == 'PUT':
         updated_task = request.json
         for key, value in updated_task.items():
             task[key] = value
         write_data(tasks, 'data/tasks.json')
         return jsonify(task)
-    
+
     elif request.method == 'DELETE':
         tasks.remove(task)
         write_data(tasks, 'data/tasks.json')
@@ -61,6 +77,11 @@ def start_pomodoro():
     })
     write_data(pomodoros, 'data/pomodoro.json')
     return jsonify({'status': 'started'})
+
+# 新增路由处理图片文件访问
+@app.route('/Image/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('Image', filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
